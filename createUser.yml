@@ -1,0 +1,33 @@
+---
+#ansible-playbook createUser.yml --vault-password-file ./vault-pass
+- name: create User user1
+  hosts: test
+  become: true
+  #remote_user: ubuntu
+  tasks:
+    - name: Add the user 'user1' with a specific uid and a primary group of 'sudo'
+      ansible.builtin.user:
+        name: user1
+        comment: user112
+        #uid: 1077
+        group: sudo
+        createhome: yes
+        home: /home/user1
+
+    - name: generate ssh key
+      user:
+        name: ansible_test
+        generate_ssh_key: true
+        ssh_key_file: /home/user1/.ssh/id_rsa
+        ssh_key_type: rsa
+        ssh_key_bits: 4096
+
+    - name: Copy server pub key
+      copy:
+        src: vault.rsa.pub
+        dest: /home/user1/.ssh/id_rsa.pub
+        decrypt: yes
+        owner: user1 
+        group: sudo 
+        mode: 400
+        backup: no
