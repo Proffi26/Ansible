@@ -16,7 +16,7 @@
 
     - name: generate ssh key
       user:
-        name: ansible_test
+        name: user1
         generate_ssh_key: true
         ssh_key_file: /home/user1/.ssh/id_rsa
         ssh_key_type: rsa
