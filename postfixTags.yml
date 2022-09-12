@@ -1,0 +1,23 @@
+---
+- name: Manage postfix
+  hosts: centos
+  become: true
+  tasks:
+    - name: drop postfix
+      ansible.builtin.yum:
+        name:
+          - postfix
+        state: absent
+        update_cache: true
+      tags:
+        - drop postfix
+
+    - name: init postfix
+      ansible.builtin.yum:
+        name:
+          - postfix
+        state: latest
+        update_cache: true
+      tags:
+        - init postfix
+
