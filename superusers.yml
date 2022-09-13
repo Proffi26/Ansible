@@ -1,0 +1,35 @@
+---
+- name: create Group Users and sudo
+  hosts: centos
+  become: true
+  tasks:
+
+    - name: Ensure group "superusers" exists
+      ansible.builtin.group:
+        name: superusers
+        state: present
+
+    - name: Add the user 'user2' with  primary group of 'superusers'
+      ansible.builtin.user:
+        name: user2
+        group: superusers
+        createhome: yes
+        home: /home/user2
+
+    - name: Add the user 'user3' with  primary group of 'superusers'
+      ansible.builtin.user:
+        name: user3
+        group: superusers
+        createhome: yes
+        home: /home/user3
+
+    - name: Validate the sudoers file before saving
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%superusers ALL='
+        line: '%superusers ALL=(ALL) NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -cf %s
+
+
+
