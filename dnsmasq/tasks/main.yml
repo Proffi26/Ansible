@@ -1,0 +1,32 @@
+---
+# tasks file for dnsmasq
+- name: install package
+  yum:
+    name: dnsmasq
+    state: installed
+
+- name: create resolv-file for dnsmasq
+  ansible.builtin.copy:
+    content: |
+      nameserver 8.8.8.8
+      nameserver 8.8.4.4
+    dest: /etc/resolv.dnsmasq
+  notify: restart dnsmasq
+
+- name: create  dnsmasq conf
+  ansible.builtin.copy:
+    content: |
+      resolv-file=/etc/resolv.dnsmasq
+      no-poll
+      listen-address=127.0.0.1
+      cache-size=150
+      conf-dir=/etc/dnsmasq.d,.rpmnew,.rpmsave,.rpmorig
+    dest: /etc/dnsmasq.conf
+  notify: restart dnsmasq
+
+- name: start service
+  service:
+    name: dnsmasq
+    state: started
+    enabled: yes
+
