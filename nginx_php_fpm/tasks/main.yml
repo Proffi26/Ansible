@@ -25,8 +25,14 @@
     #mode: 0666
   notify: restart nginx
 
+- name: Create target directory
+  file: 
+    path=/opt/nginx/ansible
+    state=directory
+    mode=0777
+
 - name: copy index.php
   copy:
     src: "{{ role_path }}/files/index.php"
-    dest: /var/www/html/index.php
-  notify: restart frm
+    dest: /opt/nginx/ansible/index.php
+  notify: restart fpm
