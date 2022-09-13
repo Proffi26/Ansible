@@ -1,0 +1,32 @@
+---
+# tasks file for nginx_php_fpm
+- name: Install Nginx
+  apt: 
+    name=nginx
+    update_cache=yes
+    state=latest
+ 
+- name: Start Nginx and boot
+  service:
+    name=nginx
+    state=started
+    enabled=yes
+
+- name: Install PHP-FPM
+  apt:
+    name=php-fpm
+    update_cache=yes
+    state=latest
+
+- name: copy nginx default
+  copy:
+    src: "{{ role_path }}/files/default"
+    dest: /etc/nginx/sites-available/default
+    #mode: 0666
+  notify: restart nginx
+
+- name: copy index.php
+  copy:
+    src: "{{ role_path }}/files/index.php"
+    dest: /var/www/html/index.php
+  notify: restart frm
